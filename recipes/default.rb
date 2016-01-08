@@ -41,7 +41,7 @@ else
   node.default['rbenv']['user_installs'] = [
       {
           user: node[:redmine][:user],
-          root_path: node[:redmine][:home],
+          home: node[:redmine][:home],
           rubies: [node[:redmine][:ruby_version]],
           global: node[:redmine][:ruby_version],
           gems: {
@@ -58,6 +58,14 @@ else
   rake_command = "#{node[:redmine][:home]}/.rbenv/shims/rake"
   ruby_command = "#{node[:redmine][:home]}/.rbenv/shims/ruby"
 end
+
+
+# update shims (neded to properly place bundle)
+execute "#{node[:redmine][:home]}/.rbenv/bin/rbenv rehash" do
+  user node[:redmine][:user]
+  cwd "#{node[:redmine][:home]}"
+end
+
 
 # Download archive with source code
 bash 'install_redmine' do
