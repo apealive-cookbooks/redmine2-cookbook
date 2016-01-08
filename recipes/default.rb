@@ -41,6 +41,7 @@ else
   node.default['rbenv']['user_installs'] = [
       {
           user: node[:redmine][:user],
+          root_path: node[:redmine][:home],
           rubies: [node[:redmine][:ruby_version]],
           global: node[:redmine][:ruby_version],
           gems: {
