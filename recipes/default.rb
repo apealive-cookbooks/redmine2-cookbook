@@ -42,6 +42,7 @@ else
       {
           user: node[:redmine][:user],
           home: node[:redmine][:home],
+          root_path: "#{node[:redmine][:home]}/.rbenv",
           rubies: [node[:redmine][:ruby_version]],
           global: node[:redmine][:ruby_version],
           gems: {
@@ -60,11 +61,12 @@ else
 end
 
 
-# update shims (neded to properly place bundle)
-execute "#{node[:redmine][:home]}/.rbenv/bin/rbenv rehash" do
-  user node[:redmine][:user]
-  cwd "#{node[:redmine][:home]}"
-end
+# workaround - update shims (neded to properly place bundle)
+#execute "install bundle + rbenv rehash" do
+  #command "#{node[:redmine][:home]}/.rbenv/shims/gem install bundler; #{node[:redmine][:home]}/.rbenv/bin/rbenv rehash" do
+  #user node[:redmine][:user]
+  #cwd "#{node[:redmine][:home]}"
+#end
 
 
 # Download archive with source code
