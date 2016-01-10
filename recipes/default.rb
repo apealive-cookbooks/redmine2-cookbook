@@ -60,14 +60,11 @@ else
   ruby_command = "#{node[:redmine][:home]}/.rbenv/shims/ruby"
 end
 
-
-# workaround - update shims (neded to properly place bundle)
-#execute "install bundle + rbenv rehash" do
-  #command "#{node[:redmine][:home]}/.rbenv/shims/gem install bundler; #{node[:redmine][:home]}/.rbenv/bin/rbenv rehash" do
-  #user node[:redmine][:user]
-  #cwd "#{node[:redmine][:home]}"
-#end
-
+# workaround - gems not installed
+# https://github.com/chef-rbenv/ruby_rbenv/issues/105
+execute "install gem bundler" do
+  command "r=`which runuser su | egrep -v 'not found' | head -n1`; $r - #{node["redmine"]["user"]} -c \'gem install bundler\'"
+end
 
 # Download archive with source code
 bash 'install_redmine' do
