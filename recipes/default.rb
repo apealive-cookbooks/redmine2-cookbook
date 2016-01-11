@@ -52,19 +52,28 @@ else
           }
       }
   ]
+
   include_recipe 'ruby_build'
-  include_recipe 'rbenv::user'
+  include_recipe 'ruby_rbenv::user'
+
+  # workaround - gems not installed
+  # https://github.com/chef-rbenv/ruby_rbenv/issues/105
+  rbenv_gem "bundler" do
+    user  node["redmine"]["user"]
+    rbenv_version node[:redmine][:ruby_version]
+    action [:install, :upgrade]
+    notifies :run, 'rbenv_rehash[Rehashing redmine user rbenv]', :immediately
+  end
+  rbenv_rehash "Rehashing redmine user rbenv" do
+    user  node["redmine"]["user"]
+  end
 
   bundle_command = "#{node[:redmine][:home]}/.rbenv/shims/bundle"
   rake_command = "#{node[:redmine][:home]}/.rbenv/shims/rake"
   ruby_command = "#{node[:redmine][:home]}/.rbenv/shims/ruby"
 end
 
-# workaround - gems not installed
-# https://github.com/chef-rbenv/ruby_rbenv/issues/105
-execute "install gem bundler" do
-  command "r=`which runuser su | egrep -v 'not found' | head -n1`; $r - #{node["redmine"]["user"]} -c \'gem install bundler\'"
-end
+
 
 # Download archive with source code
 bash 'install_redmine' do
@@ -132,8 +141,10 @@ bundle_install_command = case node[:redmine][:db][:type]
     "#{bundle_command} install --without development test mysql sqlite rmagick"
 end
 
-execute bundle_install_command do
-  user node[:redmine][:user]
+bash "bundle install" do
+  code  bundle_install_command
+  user  node[:redmine][:user]
+  group node[:redmine][:user]
   cwd "#{node[:redmine][:home]}/redmine-#{node[:redmine][:version]}"
   not_if { ::File.exists?("#{node[:redmine][:home]}redmine-#{node[:redmine][:version]}/db/schema.rb") }
 end

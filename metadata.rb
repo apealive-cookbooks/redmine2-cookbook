@@ -4,11 +4,11 @@ maintainer_email 'anton.a.minin@gmail.com'
 license          'Apache 2.0'
 description      'Installs/Configures redmine2'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '0.5.2'
+version          '0.5.3'
 
 conflicts 'redmine'
 
-depends 'rbenv'      # https://github.com/aminin/chef-rbenv
+depends 'ruby_rbenv' # github chef-rbenv/ruby_rbenv, originally: https://github.com/aminin/chef-rbenv
 depends 'ruby_build' # https://github.com/fnichol/chef-ruby_build
 depends 'nginx'
 depends 'runit'
