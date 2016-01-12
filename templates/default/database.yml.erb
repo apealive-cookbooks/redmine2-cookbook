@@ -12,7 +12,16 @@ production:
   username: <%= node[:redmine][:db][:username] %>
   password: <%= node[:redmine][:db][:password] %>
   encoding: utf8
+  <%# Expects mysql instance name "default", %>
+  <%# subject to consider cookbook attribute node.redmine.db.instance_name %>
+  <% if %w(localhost 127.0.0.1).include? node[:redmine][:db][:hostname] -%>
+  <% case node['platform_family'] -%>
+  <% when 'rhel' -%>
+  socket:   /var/run/mysql-default/mysqld.sock
+  <% when 'debian' -%>
   socket:   /run/mysql-default/mysqld.sock
+  <% end -%>
+  <% end -%>
 <% when 'sqlite' -%>
 production:
   adapter: sqlite3
