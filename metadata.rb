@@ -12,10 +12,10 @@ depends 'ruby_rbenv' # github chef-rbenv/ruby_rbenv, originally: https://github.
 depends 'ruby_build' # https://github.com/fnichol/chef-ruby_build
 depends 'nginx'
 depends 'runit'
-depends 'database', '=2.3.1' # https://github.com/brint/wordpress-cookbook/issues/52#issuecomment-72665257
+depends 'database', '~> 4.0.9'
 depends 'postgresql'
-depends 'mysql', '< 6.0' # before recipes removed
-depends 'mysql-chef_gem', '< 1.0' # transitive dependency, before recipes removed
+depends 'mysql', '~> 6.0'
+depends 'mysql2_chef_gem'
 depends 'sqlite'
 depends 'certificate'
 depends 'iptables'

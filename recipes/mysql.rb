@@ -18,18 +18,29 @@
 #
 
 if %w(localhost 127.0.0.1).include? node[:redmine][:db][:hostname]
-  include_recipe 'mysql::server'
+  # https://github.com/chef-cookbooks/mysql
+  mysql_service 'default' do
+    port '3306'
+    version '5.6'
+    initial_root_password node['mysql']['server_root_password']
+    action [:create, :start]
+  end
 end
 
-include_recipe 'mysql::client'
+mysql_client 'default' do
+  action :create
+end
 
 if [true, 'true'].include? node[:redmine][:create_db]
-  include_recipe 'database::mysql'
+  mysql2_chef_gem 'default' do
+    action :install
+  end
 
   connection_info = {
     host:     node[:redmine][:db][:hostname],
     username: 'root',
-    password: node[:mysql][:server_root_password]
+    password: node[:mysql][:server_root_password],
+    socket:   '/run/mysql-default/mysqld.sock'
   }
 
   mysql_database_user node[:redmine][:db][:username] do

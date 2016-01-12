@@ -12,6 +12,7 @@ production:
   username: <%= node[:redmine][:db][:username] %>
   password: <%= node[:redmine][:db][:password] %>
   encoding: utf8
+  socket:   /run/mysql-default/mysqld.sock
 <% when 'sqlite' -%>
 production:
   adapter: sqlite3
